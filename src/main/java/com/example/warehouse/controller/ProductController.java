@@ -25,6 +25,7 @@ import java.io.IOException;
 @Controller
 public class ProductController {
     //图片上传路径
+    //
     @Value("${file.upload-path}")
     private String imgpath;
 
