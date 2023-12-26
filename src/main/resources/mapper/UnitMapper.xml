@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.warehouse.mapper.UnitMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.warehouse.pojo.product.Unit">
+            <id property="unitId" column="unit_id" jdbcType="INTEGER"/>
+            <result property="unitName" column="unit_name" jdbcType="VARCHAR"/>
+            <result property="unitDesc" column="unit_desc" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        unit_id,unit_name,unit_desc
+    </sql>
+    <select id="getAllUnit" resultType="com.example.warehouse.pojo.product.Unit">
+        select * from unit
+    </select>
+</mapper>

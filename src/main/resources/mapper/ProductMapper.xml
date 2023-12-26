@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.warehouse.mapper.ProductMapper">
+    <insert id="addProduct">
+        insert into product values(
+                                      null,#{storeId},#{brandId},#{productName},#{productNum},#{productInvent},#{typeId},#{supplyId},#{placeId},#{unitId},#{introduce},0,#{inPrice},#{salePrice},#{memPrice},now(),null,#{createBy},null,#{imgs},#{productDate},#{suppDate})
+    </insert>
+
+    <update id="productStateChange">
+        <if test='pro.upDownState.equals("1")'>
+            update product set up_down_state=1 where product_id=#{pro.productId}
+        </if>
+        <if test='pro.upDownState.equals("0")'>
+            update product set up_down_state=0 where product_id=#{pro.productId}
+        </if>
+    </update>
+
+    <update id="updateProduct">
+        update product set brand_id=#{brandId},create_by=#{createBy},create_time=#{createTime},imgs=#{imgs},in_price=#{inPrice},introduce=#{introduce},mem_price=#{memPrice},place_id=#{placeId},product_num=#{productNum},product_name=#{productName},product_invent=#{productInvent},product_date=#{productDate},sale_price=#{salePrice},store_id=#{storeId},supp_date=#{suppDate},supply_id=#{supplyId},type_id=#{typeId},unit_id=#{unitId},up_down_state=#{upDownState},update_by=#{updateBy},update_time=#{updateTime} where product_id=#{productId}
+    </update>
+    <update id="updateBrand">
+        update brand set brand_name=#{brandName} where brand_id=#{brandId}
+    </update>
+    <update id="updatePlace">
+        update place set place_name=#{placeName} where place_id=#{placeId}
+    </update>
+    <update id="updateStore">
+        update store set store_name=#{storeName} where store_id=#{storeId}
+    </update>
+    <update id="updateSupply">
+        update supply set supply_name=#{supplyName} where supply_id=#{supplyId}
+    </update>
+    <update id="updateType">
+        update product_type set type_name=#{typeName} where type_id=#{typeId}
+    </update>
+
+    <delete id="deleteProducts">
+        delete from product where product_id in
+        <foreach collection="array" item="i" open="(" close=")" separator=",">
+            #{i}
+        </foreach>
+    </delete>
+    <delete id="deleteOne">
+        delete from product where product_id=#{id}
+    </delete>
+
+
+    <select id="productPage" resultType="com.example.warehouse.pojo.product.Product">
+        select p.*,b.brand_name,u.type_name,s.supply_name,p2.place_name,s2.store_name from product p,brand b,product_type u,supply s,place p2,store s2
+           where 1=1
+               <if test="util.productName!=null and util.productName!=''">
+                   and p.product_name like concat('%' ,#{util.productName} ,'%')
+               </if>
+               <if test="util.brandName!=null and util.brandName!=''">
+                   and b.brand_name like concat('%' ,#{util.brandName} ,'%')
+               </if>
+               <if test="util.typeName!=null and util.typeName!=''">
+                   and u.type_name like concat('%' ,#{util.typeName} ,'%')
+               </if>
+               <if test="util.supplyName!=null and util.supplyName!=''">
+                   and s.concat like concat('%' ,#{util.supplyName} ,'%')
+               </if>
+               <if test="util.placeName!=null and util.placeName!=''">
+                   and p2.place_name like concat('%' ,#{util.placeName} ,'%')
+               </if>
+               <if test='util.isOverDate.equals("0")'>
+                   and p.supp_date>#{util.now}
+               </if>
+               <if test='util.isOverDate.equals("1")'>
+                   and #{util.now}>p.supp_date
+               </if>
+               <if test="util.upDownState!=null and util.upDownState!=''">
+                   and p.up_down_state=#{util.upDownState}
+               </if>
+               <if test="1==1">
+                and s2.store_id=#{util.storeId} and p.brand_id=b.brand_id and p.type_id=u.type_id and p.supply_id=s.supply_id and p.place_id=p2.place_id and p.store_id=s2.store_id
+               </if>
+         limit #{page.indexStart},#{page.pageSize}
+    </select>
+    <select id="getAllProductCount" resultType="java.lang.Integer">
+        select count(p.product_id) from product p,brand b,product_type u,supply s,place p2,store s2
+        where 1=1
+        <if test="util.productName!=null and util.productName!=''">
+            and p.product_name like concat('%' ,#{util.productName} ,'%')
+        </if>
+        <if test="util.brandName!=null and util.brandName!=''">
+            and b.brand_name like concat('%' ,#{util.brandName} ,'%')
+        </if>
+        <if test="util.typeName!=null and util.typeName!=''">
+            and u.type_name like concat('%' ,#{util.typeName} ,'%')
+        </if>
+        <if test="util.supplyName!=null and util.supplyName!=''">
+            and s.concat like concat('%' ,#{util.supplyName} ,'%')
+        </if>
+        <if test="util.placeName!=null and util.placeName!=''">
+            and p2.place_name like concat('%' ,#{util.placeName} ,'%')
+        </if>
+        <if test='util.isOverDate.equals("0")'>
+            and p.supp_date>#{util.now}
+        </if>
+        <if test='util.isOverDate.equals("1")'>
+            and #{util.now}>p.supp_date
+        </if>
+        <if test="util.upDownState!=null and util.upDownState!=''">
+            and p.up_down_state=#{util.upDownState}
+        </if>
+        <if test="1==1">
+            and s2.store_id=#{util.storeId} and p.brand_id=b.brand_id and p.type_id=u.type_id and p.supply_id=s.supply_id and p.place_id=p2.place_id and p.store_id=s2.store_id
+        </if>
+    </select>
+</mapper>

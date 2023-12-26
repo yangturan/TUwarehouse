@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.warehouse.mapper.StoreMapper">
+    <insert id="makeStore">
+        insert into store values(null,#{storeName},#{storeNum},#{storeAddress},#{concat},#{phone})
+    </insert>
+    <update id="updateStore">
+        update store set store_name=#{storeName},phone=#{phone},concat=#{concat},store_address=#{storeAddress} where store_num=#{storeNum}
+    </update>
+    <delete id="deleteStore">
+        delete from store where store_id=#{id}
+    </delete>
+
+
+    <select id="getAllStore" resultType="com.example.warehouse.pojo.product.Store">
+        select * from store
+    </select>
+    <select id="getStoreCount" resultType="java.lang.Integer">
+        select count(*) from store where 1=1
+        <if test="storeName!=null and storeName!=''">
+             and store_name like concat('%',#{storeName},'%')
+        </if>
+        <if test="storeAddress!=null and storeAddress!=''">
+            and store_name like concat('%',#{storeAddress},'%')
+        </if>
+        <if test="concat!=null and concat!=''">
+            and concat like concat('%',#{concat},'%')
+        </if>
+        <if test="phone!=null and phone!=''">
+            and phone like concat('%',#{phone},'%')
+        </if>
+    </select>
+    <select id="getStorePage" resultType="com.example.warehouse.pojo.product.Store">
+        select * from store where 1=1
+        <if test="store.storeName!=null and store.storeName!=''">
+            and store_name like concat('%',#{store.storeName},'%')
+        </if>
+        <if test="store.storeAddress!=null and store.storeAddress!=''">
+            and store_name like concat('%',#{store.storeAddress},'%')
+        </if>
+        <if test="store.concat!=null and store.concat!=''">
+            and concat like concat('%',#{store.concat},'%')
+        </if>
+        <if test="store.phone!=null and store.phone!=''">
+            and phone like concat('%',#{store.phone},'%')
+        </if>
+limit #{page.indexStart},#{page.pageSize}
+    </select>
+    <select id="validation" resultType="com.example.warehouse.pojo.product.Store">
+        select * from store where store_num=#{storeNum}
+    </select>
+</mapper>

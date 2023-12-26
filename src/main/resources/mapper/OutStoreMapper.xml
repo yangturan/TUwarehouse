@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.warehouse.mapper.OutStoreMapper">
+
+    <insert id="makeout">
+        insert into out_store values(null,#{productId},#{storeId},null,#{salePrice},#{outNum},#{createBy},now(),0)
+    </insert>
+    <update id="updateProduct">
+        update product set product_invent=product_invent-#{outNum},update_time=now(),update_by=#{createBy} where product_id=#{productId}
+    </update>
+    <update id="updateOutStoreState">
+        update out_store set is_out=1 where outs_id=#{outsId}
+    </update>
+
+    <select id="getOutCount" resultType="java.lang.Integer">
+        select count(*) from out_store,product where 1=1 <if test="productName!=null and productName!=''">
+        and product.product_name like concat('%',#{productName},'%')
+    </if>
+    <if test="startTime!=null and startTime!=''">
+        and out_store.create_time>#{stime}
+    </if>
+        <if test="endTime!=null and endTime!=''">
+           and #{etime}>out_store.create_time
+        </if>
+            <if test="isOut!=null and isOut!=''">
+        and out_store.is_out like concat('%',#{isOut},'%')
+        </if>
+            <if test="1==1">
+                and out_store.store_id=#{storeId} and product.product_id=out_store.product_id
+            </if>
+    </select>
+
+    <select id="outPage" resultType="com.example.warehouse.pojo.product.OutStore">
+        select out_store.*,user_info.user_code,product.product_name,store.store_name from user_info,out_store,product,store where 1=1 <if test="out.productName!=null and out.productName!=''">
+        and product.product_name like concat('%',#{out.productName},'%')
+    </if>
+        <if test="out.startTime!=null and out.startTime!=''">
+            and out_store.create_time>#{out.stime}
+        </if>
+        <if test="out.endTime!=null and out.endTime!=''">
+            and #{out.etime}>out_store.create_time
+        </if>
+        <if test="out.isOut!=null and out.isOut!=''">
+            and out_store.is_out like concat('%',#{out.isOut},'%')
+        </if>
+        <if test="1==1">
+            and out_store.store_id=#{out.storeId} and product.product_id=out_store.product_id and store.store_id=out_store.store_id and user_info.user_id=out_store.create_by
+        </if>
+            limit #{page.indexStart},#{page.pageSize}
+    </select>
+    <select id="selectUserId" resultType="java.lang.Integer">
+        select user_id from user_info where user_code=#{userCode}
+    </select>
+    <select id="selectProductInvent" resultType="java.lang.Integer">
+        select product_invent from product where product_id=#{productId}
+    </select>
+</mapper>

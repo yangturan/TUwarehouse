@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.warehouse.mapper.BuyListMapper">
+
+    <insert id="buy">
+        insert into buy_list values(#{buyId},#{productId},#{storeId},#{buyNum},#{factBuyNum},now(),#{supplyId},#{placeId},#{buyUser},#{phone},0)
+    </insert>
+
+    <update id="updateBuy">
+        update buy_list set buy_num=#{buyNum},fact_buy_num=#{factBuyNum} where buy_id=#{buyId}
+    </update>
+
+    <!--    startTime=&endTime=&productName=&
+        // buyUser=&isIn=-->
+    <select id="buypage" resultType="com.example.warehouse.pojo.product.BuyList">
+        select buy_list.*,product.product_name,store.store_name from buy_list,product,store where 1=1
+        <if test="buyList.startTime!=null and buyList.startTime!=''">
+            and buy_list.buy_time>#{buyList.stime}
+        </if>
+        <if test="buyList.endTime!=null and buyList.endTime!=''">
+            and #{buyList.etime}>buy_list.buy_time
+        </if>
+        <if test="buyList.productName!=null and buyList.productName!=''">
+            and product.product_name like concat('%',#{buyList.productName},'%')
+        </if>
+        <if test="buyList.buyUser!=null and buyList.buyUser!=''">
+            and buy_list.buy_user like concat('%', #{buyList.buyUser}, '%')
+        </if>
+        <if test="buyList.isIn!=null and buyList.isIn!=''">
+            and buy_list.is_in like concat('%',#{buyList.isIn},'%')
+        </if>
+        <if test="1==1">
+            and #{buyList.storeId}=buy_list.store_id and buy_list.product_id=product.product_id and buy_list.store_id=store.store_id
+        </if>
+limit #{page.indexStart},#{page.pageSize}
+    </select>
+    <select id="getAllBuyCount" resultType="java.lang.Integer">
+        select count(*) from buy_list,product where 1=1
+        <if test="buyList.startTime!=null and buyList.startTime!=''">
+            and buy_list.buy_time>#{buyList.stime}
+        </if>
+        <if test="buyList.endTime!=null and buyList.endTime!=''">
+            and #{buyList.etime}>buy_list.buy_time
+        </if>
+        <if test="buyList.productName!=null and buyList.productName!=''">
+            and #{buyList.productName}=product.product_name
+        </if>
+        <if test="buyList.buyUser!=null and buyList.buyUser!=''">
+            and #{buyList.buyUser}=buy_list.buy_user
+        </if>
+        <if test="buyList.isIn!=null and buyList.isIn!=''">
+            and #{buyList.isIn}=buy_list.is_in
+        </if>
+        <if test="1==1">
+            and #{buyList.storeId}=buy_list.store_id and product.product_id=buy_list.product_id
+        </if>
+    </select>
+</mapper>

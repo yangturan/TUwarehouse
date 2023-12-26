@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.warehouse.mapper.UserMapper">
+    <insert id="addUser">
+        insert into user_info values(null,#{userCode},#{userName},#{userPwd},null,0,0,#{createBy},now(),null,null)
+    </insert>
+
+    <insert id="insertByRoleId">
+        insert into user_role(role_id,user_id) values
+        <foreach collection="roleIdByRoleName" item="roleId" separator=",">
+                                  (#{roleId},#{userId})
+        </foreach>
+    </insert>
+
+    <update id="updateState">
+        update user_info set user_state=#{userState} where user_id=#{userId}
+    </update>
+
+    <update id="updateUserName">
+        update user_info set user_name=#{userName} where user_id=#{userId}
+    </update>
+
+    <update id="updatePwd">
+        update user_info set user_pwd=#{param2} where user_id=#{param1}
+    </update>
+
+    <delete id="deleteAllRoleByUserId">
+        delete from user_role where user_id=#{userId}
+    </delete>
+
+    <delete id="deleteUser">
+        delete from user_info where user_id=#{userId}
+    </delete>
+
+    <delete id="deleteMantUser">
+        delete from user_info where user_id in
+           <foreach collection="array" item="i" open="(" close=")" separator=",">
+               #{i}
+           </foreach>
+    </delete>
+
+    <select id="getTotalNum" resultType="int">
+        select count(*) from user_info where 1=1
+        <if test="userCode!=null and userCode!=''">
+            and user_code=#{userCode}
+        </if>
+        <if test="userType!=null and userType!=''">
+            and user_type=#{userType}
+        </if>
+        <if test="userState!=null and userState!=''">
+            and user_state=#{userState}
+        </if>
+    </select>
+
+    <select id="getUsers" resultType="com.example.warehouse.pojo.users.User">
+        select * from user_info where 1=1
+        <if test="user.userCode!=null and user.userCode!=''">
+            and user_code like concat('%',#{user.userCode},'%')
+        </if>
+        <if test="user.userType!=null and user.userType!=''">
+            and user_type=#{user.userType}
+        </if>
+        <if test="user.userState!=null and user.userState!=''">
+            and user_state=#{user.userState}
+        </if>
+        limit #{page.indexStart},#{page.pageSize}
+    </select>
+
+
+    <select id="queryHaveByUserCode" resultType="com.example.warehouse.pojo.users.User">
+        select * from user_info where user_code=#{userCode}
+    </select>
+
+    <select id="getUserRole" resultType="com.example.warehouse.pojo.Role.Role">
+        select r1.* from role r1,user_role r2 where r1.role_id=r2.role_id and r2.user_id=#{id} and r1.role_state='1'
+    </select>
+
+    <select id="getRoleIdByRoleName" resultType="java.lang.Integer">
+        select role_id from role where role_name in
+               <foreach collection="list" item="string" open="(" close=")" separator=",">
+                   #{string}
+               </foreach>
+    </select>
+
+    <select id="selectRoleOkDeleteUser" resultType="java.lang.Integer">
+        select * from user_role where role_id in (1,2) and user_id=#{userid1}
+    </select>
+
+
+
+</mapper>

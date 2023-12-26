@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.warehouse.mapper.PlaceMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.warehouse.pojo.product.Place">
+            <id property="placeId" column="place_id" jdbcType="INTEGER"/>
+            <result property="placeName" column="place_name" jdbcType="VARCHAR"/>
+            <result property="placeNum" column="place_num" jdbcType="VARCHAR"/>
+            <result property="introduce" column="introduce" jdbcType="VARCHAR"/>
+            <result property="isDelete" column="is_delete" jdbcType="CHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        place_id,place_name,place_num,
+        introduce,is_delete
+    </sql>
+    <select id="getAllPlace" resultType="com.example.warehouse.pojo.product.Place">
+        select * from place
+    </select>
+</mapper>

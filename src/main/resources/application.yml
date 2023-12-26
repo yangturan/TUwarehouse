@@ -1,0 +1,57 @@
+#数据库配置
+spring:
+  datasource:
+    password: 961222
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/donglicangku
+    username: root
+  #配置redis
+  data:
+    redis:
+      #端口号
+      port: 6379
+      #ip地址（redis服务器的ip）
+      host: 192.168.10.141
+      #redis数据库的下标
+      database: 0
+      password: 961222
+      timeout: 3600
+
+  #最大上传图片限制
+  servlet:
+    multipart:
+      max-file-size: 20MB
+
+
+#mybatis配置
+mybatis:
+  configuration:
+    #驼峰映射
+    map-underscore-to-camel-case: true
+    #开启日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #对于非注解的复杂mapper，使用配置导入
+  mapper-locations: classpath:mapper/*.xml
+  #给实体类起别名
+  type-aliases-package: com.example.warehourse.pojo
+
+
+#服务器路径
+server:
+  #端口号
+  port: 9999
+  servlet:
+    #项目名称
+    context-path: /warehouse
+
+#自定义属性
+#过期时间
+warehouse:
+  expire-time: 28800
+#图片上传的位置
+file:
+  #图片上传路径
+  upload-path: classpath:static/img/upload
+  #图片访问路径
+  access-path: /img/upload
+

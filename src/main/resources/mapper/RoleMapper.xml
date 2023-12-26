@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.warehouse.mapper.RoleMapper">
+    <insert id="addRole">
+        insert into role(role_code,role_desc,role_name) values (#{roleCode},
+            #{roleDesc},#{roleName})
+    </insert>
+
+    <insert id="addRoleAuth">
+        insert into role_auth(role_auth_id,role_id,auth_id) values
+          <foreach collection="authIds" item="item" separator=",">
+              (0,#{roleId},#{item})
+          </foreach>
+    </insert>
+
+    <update id="updateRoleState">
+        update role set role_state=#{roleState} where role_id=#{roleId}
+    </update>
+
+    <update id="updateRoleDesc">
+        update role set role_desc=#{roleDesc} where role_id=#{roleId}
+    </update>
+
+
+
+    <delete id="deleteRole">
+        delete from role where role_id=#{id}
+    </delete>
+
+    <delete id="deleteRoleAuth">
+        delete from role_auth where role_id=#{roleId}
+    </delete>
+
+    <select id="getAllRole" resultType="com.example.warehouse.pojo.Role.Role">
+        select * from role where role_state='1'
+    </select>
+
+    <select id="getAllRoleCount" resultType="java.lang.Integer">
+        select count(*) from role where 1=1
+          <if test="role.roleName!=null and role.roleName!=''">
+              and role_name like concat('%',#{role.roleName},'%')
+          </if>
+          <if test="role.roleCode!=null and role.roleCode!=''">
+              and role_code = #{role.roleCode}
+          </if>
+          <if test="role.roleState!=null and role.roleState!=''">
+            and role_state = #{role.roleState}
+          </if>
+    </select>
+
+    <select id="rolePage" resultType="com.example.warehouse.pojo.Role.Role">
+       select * from role where 1=1
+        <if test="role.roleName!=null and role.roleName!=''">
+            and role_name like concat('%',#{role.roleName},'%')
+        </if>
+        <if test="role.roleCode!=null and role.roleCode!=''">
+            and role_code = #{role.roleCode}
+        </if>
+        <if test="role.roleState!=null and role.roleState!=''">
+            and role_state = #{role.roleState}
+        </if>
+             limit #{page.indexStart},#{page.pageSize}
+    </select>
+
+    <select id="getRoleAuth" resultType="int">
+        select a.auth_id from role_auth r,auth_info a where a.auth_id=r.auth_id and r.role_id=#{id}
+    </select>
+</mapper>
