@@ -1,2 +1,4 @@
 src内是后端源码，包括spring配置文件，静态资源，纯手打
 pom文件是maven依赖
+donglicangku.sql是数据库结构
+before文件是前端源码，借鉴了b站动力哥的分享
